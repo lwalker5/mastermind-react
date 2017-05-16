@@ -1,6 +1,5 @@
 var React = require('react');
 var PropTypes = require('prop-types');
-var api = require('../utils/api');
 
 
 function Peg(props) {
