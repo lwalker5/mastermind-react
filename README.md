@@ -2,7 +2,7 @@
 
 A few years ago I built a version of the code breaking game Mastermind. It works well but looking back, the code has lots of room for improvement. I'm currently rebuilding in React and making it responsive.
 
-Original repo is here: [Old Version](https://github.com/lwalker5/mastermind)
+Original repo is here: [Old Version](https://github.com/lwalker5/mastermind)  
 Older working version: [Mastermind](http://lindsaymwalker.com/mastermind/)
 
 
