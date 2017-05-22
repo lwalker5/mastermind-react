@@ -1,0 +1,110 @@
+$red: rgb(200,56,51);
+$orange: rgb(255,86,28);
+$yellow: rgb(238, 196, 45);
+$green: rgb(69,171,45);
+$teal: rgb(10,102,110);
+//$purple: rgb(57,54,138);
+$purple: rgb(79,73,244);
+$pink: rgb(204,98,171);
+$white: rgb(209,204,172);
+$gray: rgb(204,204,204);
+$dark-gray: rgb(39,39,39);
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background-color: $dark-gray;
+	color: $white;
+}
+
+ul,li {
+	padding: 0;
+	margin: 0;
+}
+
+li {
+	list-style-type: none;
+}
+
+.game-wrapper {
+} 
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.languages {
+	display: flex;
+	justify-content: center;
+}
+
+.languages li {
+	margin: 10px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.popular-list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+.popular-item {
+	margin: 20px;
+	text-align: center;
+}
+
+.space-list-items {
+	margin-bottom: 7px;
+}
+
+.avatar {
+	width: 150px;
+	border-radius: 50%;
+}
+
+.popular-rank {
+	font-size: 20px;
+	margin: 10px;
+}
+
+.row {
+	background-color: red;
+	border-top: 1px solid black; 
+}
+
+$peg-colors: ('empty': $gray,
+			'red': $red,
+			'orange': $orange,
+			'yellow': $yellow,
+			'green': $green,
+			'teal': $teal,
+			'purple': $purple,
+			'pink': $pink,
+			'white': $white); 
+ 
+.game-peg {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	border-radius: 20px;
+	background-color: red;
+	box-shadow: 0 0 4px 2px rgb(75,69,69);
+	//opacity: 0.64;
+	font-size: 0em;
+	margin: 4px;
+	@each $color, $value in $peg-colors {
+		&.peg-#{$color} {
+			background-color: $value;
+		}
+	} 	
+}
+
+.peg-selector {
+	margin-top: 40px;
+}

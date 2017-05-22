@@ -10,23 +10,23 @@ function Peg(props) {
 		3: 'yellow',
 		4: 'green',
 		5: 'teal',
-		6: 'indigo',
-		7: 'purple',
-		8: 'whitee'
+		6: 'purple',
+		7: 'pink',
+		8: 'white'
 	};	 
 	return (
 		<li 
-			className="game-peg peg-{colorMap[peg]}"
+			className={"game-peg peg-"+colorMap[props.fill]}
 			onClick={props.clickHandler}
 		>{colorMap[props.fill]}</li>
 	)
 }
 
 function PegSelector(props) {
-	var pegOptions = [0,1,2,3,4,5,6,7,8,'back'];
+	var pegOptions = [1,2,3,4,5,6,7,8];
 
 	return (
-		<ul className="pegOptions">
+		<ul className="peg-selector">
 			{pegOptions.map(function(peg){
 				return (
 					<Peg 
@@ -38,6 +38,12 @@ function PegSelector(props) {
 			})}
 		</ul>
 	)	
+}
+
+function ConfirmationButton(props) {
+	return (
+		<span className="confirm-btn">OK!</span>
+	)
 }
 
 /*SelectLanguage.propTypes = {
@@ -123,12 +129,17 @@ class Board extends React.Component {
 	fillNextSlot(chosenPeg) {
 		var board = this.state.board;
 		board.rows[this.state.activeRow].pegs[this.state.activeIndex] = chosenPeg;
-		this.setState(function() {
-			return {
-				board: board,
-				activeIndex: (this.state.activeIndex + 1)
-			}
-		}); 
+		if (this.state.activeIndex >= this.state.rowLength) {
+			//disable color selector for now
+			console.log('you can\'t do that');
+		} else {
+			this.setState(function() {
+				return {
+					board: board,
+					activeIndex: (this.state.activeIndex + 1)
+				}
+			}); 			
+		}
 	}
 	render() {
 		return (
@@ -138,6 +149,9 @@ class Board extends React.Component {
 						return (
 							<li key={index}>
 								<Row pegs={row.pegs} rowNum={index} rowLength={this.state.rowLength}/>
+								{this.state.activeIndex >= this.state.rowLength && this.state.activeRow == index &&
+									<ConfirmationButton rowNum={index} />
+								}
 							</li>
 						)
 					},this)}
