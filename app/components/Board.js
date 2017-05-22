@@ -42,9 +42,29 @@ function PegSelector(props) {
 
 function ConfirmationButton(props) {
 	return (
-		<span className="confirm-btn">OK!</span>
+		<span className="confirm-btn" onClick={props.onClick}>OK!</span>
 	)
 }
+
+
+function SecretCode(props) {
+	//hide this later - show for debugging
+	console.log(props.code);
+	return (
+		<section className="code-reveal">
+			<h2>Code</h2>
+			<ul className="code-wrapper">
+				{props.code.map(function(peg,index){
+					return (
+						<Peg key={index}
+							fill={peg} />
+					)
+				})}
+			</ul>
+		</section>
+	)
+}
+
 
 /*SelectLanguage.propTypes = {
 	selectedLanguage: PropTypes.string.isRequired,
@@ -99,15 +119,16 @@ class Board extends React.Component {
 	constructor(props) {
 		super();
 		this.state = { 
-			selectedLanguage: 'All',
 			activeRow: 0,
 			activeIndex: 0,
 			numRows: 3,
 			rowLength: 4,
+			code: [],
 			board: {rows: []}
 		};
 
 		this.fillNextSlot = this.fillNextSlot.bind(this);
+		this.checkRow = this.checkRow.bind(this);
 	}
 	componentDidMount() {
 		//this.fillNextSlot(this.state.selectedLanguage);
@@ -125,6 +146,7 @@ class Board extends React.Component {
 				board: board
 			}
 		})
+		this.setCode(this.state.numRows);
 	}
 	fillNextSlot(chosenPeg) {
 		var board = this.state.board;
@@ -133,13 +155,32 @@ class Board extends React.Component {
 			//disable color selector for now
 			console.log('you can\'t do that');
 		} else {
-			this.setState(function() {
+			this.setState(function(prevState,props) {
 				return {
 					board: board,
-					activeIndex: (this.state.activeIndex + 1)
+					activeIndex: (prevState.activeIndex + 1)
 				}
 			}); 			
 		}
+	}
+	setCode(codeLength) {
+		var code = []
+		for (var j = 0; j <= codeLength; j++) {
+			var randNum = Math.floor((Math.random()*7)+1);
+			code.push(randNum);
+		} 
+		console.log(code);
+		this.setState({
+			code: code
+		});
+	}
+	checkRow() {
+		this.setState(function(prevState,props) {
+			return {
+				activeRow: (prevState.activeRow + 1),
+				activeIndex: 0
+			}
+		});			
 	}
 	render() {
 		return (
@@ -150,7 +191,7 @@ class Board extends React.Component {
 							<li key={index}>
 								<Row pegs={row.pegs} rowNum={index} rowLength={this.state.rowLength}/>
 								{this.state.activeIndex >= this.state.rowLength && this.state.activeRow == index &&
-									<ConfirmationButton rowNum={index} />
+									<ConfirmationButton rowNum={index} onClick={this.checkRow} />
 								}
 							</li>
 						)
@@ -159,6 +200,7 @@ class Board extends React.Component {
 				<PegSelector
 					onSelect = {this.fillNextSlot}
 				/>
+				<SecretCode code={this.state.code}/>
 			</div>
 		)
 	}
