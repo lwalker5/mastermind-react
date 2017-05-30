@@ -9,6 +9,7 @@ $pink: rgb(204,98,171);
 $white: rgb(209,204,172);
 $gray: rgb(204,204,204);
 $dark-gray: rgb(39,39,39);
+$black: rgb(0,0,0);
 
 * {
 	box-sizing: border-box;
@@ -78,20 +79,25 @@ li {
 	margin: 10px;
 }
 
+.row-wrapper ul {
+	display: inline-flex;
+}
+
 .row {
 	background-color: red;
 	border-top: 1px solid black; 
 }
 
-$peg-colors: ('empty': $gray,
+$peg-colors: ('empty': rgba($gray,0.07),
 			'red': $red,
 			'orange': $orange,
 			'yellow': $yellow,
 			'green': $green,
-			'teal': $teal,
+			'teal': $teal,  
 			'purple': $purple,
 			'pink': $pink,
-			'white': $white); 
+			'white': $white,
+			'black': $black); 
  
 .game-peg {
 	display: inline-block;
@@ -103,12 +109,21 @@ $peg-colors: ('empty': $gray,
 	//opacity: 0.64;
 	font-size: 0em;
 	margin: 4px;
-	@each $color, $value in $peg-colors {
-		&.peg-#{$color} {
-			background-color: $value;
-		}
-	} 	
 }
+
+.result-peg {
+	width: 10px;
+	height: 10px;
+	border-radius: 10px;
+	background-color: $gray;	
+	font-size: 0em;
+}
+
+@each $color, $value in $peg-colors {
+	.peg-#{$color} {
+		background-color: $value;
+	}
+} 
 
 .peg-selector {
 	margin: 40px 0;

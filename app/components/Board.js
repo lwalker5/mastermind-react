@@ -3,20 +3,22 @@ var PropTypes = require('prop-types');
 
 
 function Peg(props) {
+	//peg type is 'user' for larger playable pegs and 'result' for small result markers 
 	var colorMap = {
 		0: 'empty',
-		1: 'red',
+		1: 'red', 
 		2: 'orange',
 		3: 'yellow',
 		4: 'green',
-		5: 'teal',
+		5: 'teal', 
 		6: 'purple',
 		7: 'pink',
-		8: 'white'
+		8: 'white',
+		9: 'black'
 	};	 
 	return (
 		<li 
-			className={"game-peg peg-"+colorMap[props.fill]}
+			className={(props.pegType == 'user' ? "game-peg" : "result-peg") + " peg-"+colorMap[props.fill]}
 			onClick={props.clickHandler}
 		>{colorMap[props.fill]}</li>
 	)
@@ -32,6 +34,7 @@ function PegSelector(props) {
 					<Peg 
 						key={peg}
 						fill={peg}
+						pegType="user"
 						clickHandler={props.onSelect.bind(null,peg)}
 					/>
 				)
@@ -49,7 +52,6 @@ function ConfirmationButton(props) {
 
 function SecretCode(props) {
 	//hide this later - show for debugging
-	console.log(props.code);
 	return (
 		<section className="code-reveal">
 			<h2>Code</h2>
@@ -57,7 +59,9 @@ function SecretCode(props) {
 				{props.code.map(function(peg,index){
 					return (
 						<Peg key={index}
-							fill={peg} />
+							fill={peg} 
+							pegType="user"
+						/>
 					)
 				})}
 			</ul>
@@ -99,17 +103,26 @@ class Row extends React.Component {
 		})
 	}*/
 	render() {
-		console.log(this.props.pegs);
+		//console.log(this.props.pegs);
 		return (
-			<ul>
-				<span>Row {this.props.rowNum}</span>
-				{this.props.pegs.map(function(pegFill){
-					return (
-						<Peg fill={pegFill}/>
-					)
-				},this)}
-				<br/>
-			</ul>
+			<div className="row-wrapper">
+				<ul>
+					<span>Row {this.props.rowNum}</span>
+					{this.props.pegs.map(function(pegFill,index){
+						return (
+							<Peg key={index} pegType="user" fill={pegFill}/>
+						) 
+					},this)}
+				</ul>
+				<ul>
+					{this.props.resultPegs.map(function(pegFill, index){
+						return (
+							<Peg key={index} pegType="result" fill={pegFill}/>
+						)
+					},this)}
+					<br/>
+				</ul>
+			</div>
 		)
 	}
 }
@@ -121,7 +134,7 @@ class Board extends React.Component {
 		this.state = { 
 			activeRow: 0,
 			activeIndex: 0,
-			numRows: 3,
+			numRows: 10,
 			rowLength: 4,
 			code: [],
 			board: {rows: []}
@@ -146,15 +159,15 @@ class Board extends React.Component {
 				board: board
 			}
 		})
-		this.setCode(this.state.numRows);
+		this.setCode(this.state.rowLength);
 	}
 	fillNextSlot(chosenPeg) {
 		var board = this.state.board;
-		board.rows[this.state.activeRow].pegs[this.state.activeIndex] = chosenPeg;
 		if (this.state.activeIndex >= this.state.rowLength) {
 			//disable color selector for now
 			console.log('you can\'t do that');
 		} else {
+			board.rows[this.state.activeRow].pegs[this.state.activeIndex] = chosenPeg;
 			this.setState(function(prevState,props) {
 				return {
 					board: board,
@@ -165,20 +178,67 @@ class Board extends React.Component {
 	}
 	setCode(codeLength) {
 		var code = []
-		for (var j = 0; j <= codeLength; j++) {
+		for (var j = 0; j < codeLength; j++) {
 			var randNum = Math.floor((Math.random()*7)+1);
 			code.push(randNum);
 		} 
-		console.log(code);
 		this.setState({
 			code: code
 		});
+		console.log(code);
 	}
 	checkRow() {
+		var resultPegTypes = {
+			EMPTY : 0,
+			BLACK : 9,
+			WHITE: 8
+		}
+
+
+		//code and guess are array copies, need to use slice to prevent updating the state values by reference
+		var code = this.state.code.slice(),
+			guess = this.state.board.rows[this.state.activeRow].pegs.slice(),
+			currBoard = Object.assign({},this.state.board),
+			resultPegs = [],
+			blackPegCount = 0,
+			whitePegCount = 0;
+
+		for (var i = 0; i < code.length; i++) {
+			if (guess[i] === code[i]) {
+				blackPegCount += 1;
+				resultPegs.push(resultPegTypes.BLACK);
+				guess.splice(i,1);
+				code.splice(i,1);
+				i--;
+			}
+
+		}
+
+		for (var j = 0; j < guess.length; j++) {
+			var matchIndex = code.indexOf(guess[j]);
+			if (guess[j] != null && matchIndex !== -1) {
+				resultPegs.push(resultPegTypes.WHITE);
+				whitePegCount += 1;
+				code.splice(matchIndex,1);
+				guess.splice(j,1);
+
+				j--;
+			}
+			else {
+				resultPegs.push(resultPegTypes.EMPTY);
+			}
+		}
+
+		console.log(resultPegs);
+		currBoard.rows[this.state.activeRow].resultPegs = resultPegs;
+
+		console.log(blackPegCount);
+		console.log(whitePegCount);
 		this.setState(function(prevState,props) {
 			return {
 				activeRow: (prevState.activeRow + 1),
-				activeIndex: 0
+				activeIndex: 0,
+				board: currBoard
 			}
 		});			
 	}
@@ -189,7 +249,7 @@ class Board extends React.Component {
 					{this.state.board.rows.map(function(row,index){
 						return (
 							<li key={index}>
-								<Row pegs={row.pegs} rowNum={index} rowLength={this.state.rowLength}/>
+								<Row pegs={row.pegs} resultPegs={row.resultPegs} rowNum={index} rowLength={this.state.rowLength}/>
 								{this.state.activeIndex >= this.state.rowLength && this.state.activeRow == index &&
 									<ConfirmationButton rowNum={index} onClick={this.checkRow} />
 								}
