@@ -1,47 +1,8 @@
 var React = require('react');
 var PropTypes = require('prop-types');
-
-
-function Peg(props) {
-	//peg type is 'user' for larger playable pegs and 'result' for small result markers 
-	var colorMap = {
-		0: 'empty',
-		1: 'red', 
-		2: 'orange',
-		3: 'yellow',
-		4: 'green',
-		5: 'teal', 
-		6: 'purple',
-		7: 'pink',
-		8: 'white',
-		9: 'black'
-	};	 
-	return (
-		<li 
-			className={(props.pegType == 'user' ? "game-peg" : "result-peg") + " peg-"+colorMap[props.fill]}
-			onClick={props.clickHandler}
-		>{colorMap[props.fill]}</li>
-	)
-}
-
-function PegSelector(props) {
-	var pegOptions = [1,2,3,4,5,6,7,8];
-
-	return (
-		<ul className="peg-selector">
-			{pegOptions.map(function(peg){
-				return (
-					<Peg 
-						key={peg}
-						fill={peg}
-						pegType="user"
-						clickHandler={props.onSelect.bind(null,peg)}
-					/>
-				)
-			})}
-		</ul>
-	)	
-}
+var Row = require('./Row');
+var PegSelector = require('./PegSelector');
+var Peg = require('./Peg');
 
 function ConfirmationButton(props) {
 	return (
@@ -74,58 +35,6 @@ function SecretCode(props) {
 	selectedLanguage: PropTypes.string.isRequired,
 	onSelect: PropTypes.func.isRequired
 };*/
-
-class Row extends React.Component {
-	constructor(props) {
-		super();
-		this.state = {
-			isActive: false,
-			activeIndex: 0,
-		}
-	}
-	componentDidMount() {
-		//this.initRow(this.props.rowLength,this.props.pegs);
-	}
-	componentWillUpdate() {
-		//this.initRow(this.props.rowLength,this.props.pegs);		
-	}
-	/*initRow(rowLength) {
-		console.log(this.props.pegs);
-		var pegArray = [];
-		for (var p = 0; p < rowLength; p++) {
-			pegArray.push(0);
-		}
-
-		this.setState(function(){
-			return {
-				pegs: pegArray
-			}
-		})
-	}*/
-	render() {
-		//console.log(this.props.pegs);
-		return (
-			<div className="row-wrapper">
-				<ul>
-					<span>Row {this.props.rowNum}</span>
-					{this.props.pegs.map(function(pegFill,index){
-						return (
-							<Peg key={index} pegType="user" fill={pegFill}/>
-						) 
-					},this)}
-				</ul>
-				<ul>
-					{this.props.resultPegs.map(function(pegFill, index){
-						return (
-							<Peg key={index} pegType="result" fill={pegFill}/>
-						)
-					},this)}
-					<br/>
-				</ul>
-			</div>
-		)
-	}
-}
 
 
 class Board extends React.Component {
@@ -193,7 +102,6 @@ class Board extends React.Component {
 			BLACK : 9,
 			WHITE: 8
 		}
-
 
 		//code and guess are array copies, need to use slice to prevent updating the state values by reference
 		var code = this.state.code.slice(),
