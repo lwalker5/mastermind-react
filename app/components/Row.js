@@ -20,7 +20,6 @@ class Row extends React.Component {
 		return (
 			<div className="row-wrapper">
 				<ul>
-					<span>Row {this.props.rowNum}</span>
 					{this.props.pegs.map(function(pegFill,index){
 						return (
 							<Peg key={index} pegType="user" fill={pegFill}/>

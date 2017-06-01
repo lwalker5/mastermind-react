@@ -10,6 +10,13 @@ function ConfirmationButton(props) {
 	)
 }
 
+function ProgressIndicator(props) {
+	var distFromBottom = (props.position) * 48;
+	return (
+		<span className="progress-indicator" style={{top:distFromBottom}}>Ahoy></span>
+	)
+}
+
 
 function SecretCode(props) {
 	//hide this later - show for debugging
@@ -41,9 +48,9 @@ class Board extends React.Component {
 	constructor(props) {
 		super();
 		this.state = { 
-			activeRow: 0,
+			activeRow: 4,
 			activeIndex: 0,
-			numRows: 10,
+			numRows: 5,
 			rowLength: 4,
 			code: [],
 			board: {rows: []}
@@ -144,7 +151,7 @@ class Board extends React.Component {
 		console.log(whitePegCount);
 		this.setState(function(prevState,props) {
 			return {
-				activeRow: (prevState.activeRow + 1),
+				activeRow: (prevState.activeRow - 1),
 				activeIndex: 0,
 				board: currBoard
 			}
@@ -153,18 +160,21 @@ class Board extends React.Component {
 	render() {
 		return (
 			<div className="board-wrapper">
-				<ul className="board">
-					{this.state.board.rows.map(function(row,index){
-						return (
-							<li key={index}>
-								<Row pegs={row.pegs} resultPegs={row.resultPegs} rowNum={index} rowLength={this.state.rowLength}/>
-								{this.state.activeIndex >= this.state.rowLength && this.state.activeRow == index &&
-									<ConfirmationButton rowNum={index} onClick={this.checkRow} />
-								}
-							</li>
-						)
-					},this)}
-				</ul>
+				<div className="board">
+					<ProgressIndicator position={this.state.activeRow} />
+					<ul className="rows">
+						{this.state.board.rows.map(function(row,index){
+							return (
+								<li key={index}>
+									<Row pegs={row.pegs} resultPegs={row.resultPegs} rowNum={index} rowLength={this.state.rowLength}/>
+									{this.state.activeIndex >= this.state.rowLength && this.state.activeRow == index &&
+										<ConfirmationButton rowNum={index} onClick={this.checkRow} />
+									}
+								</li>
+							)
+						},this)}
+					</ul>
+				</div>
 				<PegSelector
 					onSelect = {this.fillNextSlot}
 				/>
