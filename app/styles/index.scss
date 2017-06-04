@@ -1,3 +1,5 @@
+$primary-font: 'Trebuchet MS';
+
 $red: rgb(200,56,51);
 $orange: rgb(255,86,28);
 $yellow: rgb(238, 196, 45);
@@ -15,10 +17,15 @@ $black: rgb(0,0,0);
 	box-sizing: border-box;
 }
 
+html,body {
+	height: 100%;
+}
+ 
 body {
 	margin: 0;
-	background-color: $dark-gray;
+	background-color: rgb(22, 40, 42);
 	color: $white;
+	font-family: $primary-font;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -36,12 +43,36 @@ li {
 }
 
 .game-wrapper {
-	padding: 20px;
+	min-height: 100%;
+	max-width: 650px;
+	margin: 0 auto;
+	padding: 24px 27px;
+	border: 16px double #182223;
+	background: url(../assets/backtex.png);
 } 
+
+.action-element {
+	cursor: pointer;
+	&.game-peg:hover {
+		opacity: 0.87;
+	}
+}
 
 .container {
 	max-width: 1200px;
 	margin: 0 auto;
+}
+
+h1 {
+	font-size: 3.5em;
+	text-transform: uppercase;
+	opacity: 0.8;
+	color: $teal;
+	text-shadow: 1px 1px 7px darken($teal, 5%);
+}
+
+.game-header {
+	margin-bottom: 25px;
 }
 
 .board-wrapper {
@@ -55,17 +86,22 @@ li {
 .progress-indicator {
 	position: absolute;
 	line-height: 38px;
+	left: -27px;
 	transition: top ease-out 400ms;
+	transform: rotateY(180deg);
 }
 
 .rows {
-	padding-left: 42px;
+	width: 50%;
 }
 
 .row-wrapper {
-	display: flex;
 	padding-bottom: 10px;
-	ul {display: inline-flex; }
+	display: flex;
+	align-items: center;
+	ul {
+		display: flex;
+	}
 }
 
 .row {
@@ -83,6 +119,10 @@ $peg-colors: ('empty': rgba($gray,0.07),
 			'pink': $pink,
 			'white': $white,
 			'black': $black); 
+
+.game-pegs {
+	margin-right: 16px;
+}
  
 .game-peg {
 	display: inline-block;
@@ -91,17 +131,35 @@ $peg-colors: ('empty': rgba($gray,0.07),
 	border-radius: 20px;
 	background-color: red;
 	box-shadow: 0 0 4px 2px rgb(75,69,69);
-	//opacity: 0.64;
+	opacity: 0.8;
 	font-size: 0em;
-	margin: 4px;
+	vertical-align: top;
+	text-indent: -999em;
+	margin: 4px 6px;
+}
+
+.result-pegs {
+	max-width: 36px;
+	flex-flow: wrap;
+	margin-left: auto;
 }
 
 .result-peg {
 	width: 10px;
 	height: 10px;
 	border-radius: 10px;
-	background-color: $gray;	
+	background-color: $gray;
+	margin-right: 5px;
+	margin-bottom: 6px;	
 	font-size: 0em;
+	float: left;
+	box-shadow: 0 0 1px 1px #4b4545;
+	&:nth-of-type(2n+1) {
+		clear: both;
+	}
+	&:nth-of-type(n + 2) {
+		margin-bottom: 0;
+	}
 }
 
 @each $color, $value in $peg-colors {

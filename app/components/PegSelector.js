@@ -12,10 +12,13 @@ function PegSelector(props) {
 						key={peg}
 						fill={peg}
 						pegType="user"
+						actionItem={true}
 						clickHandler={props.onSelect.bind(null,peg)}
 					/>
+
 				)
 			})}
+			<li onClick={props.removePeg.bind(null)} className="action-element">Undo</li>
 		</ul>
 	)	
 }

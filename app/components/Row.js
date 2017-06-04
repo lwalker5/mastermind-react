@@ -1,6 +1,12 @@
 var React = require('react');
 var Peg = require('./Peg');
 
+function ConfirmationButton(props) {
+	return (
+		<span className="confirm-btn action-element" onClick={props.onClick}>OK!</span>
+	)
+}
+
 class Row extends React.Component {
 	constructor(props) {
 		super();
@@ -8,6 +14,7 @@ class Row extends React.Component {
 			isActive: false,
 			activeIndex: 0,
 		}
+		console.log(props);
 	}
 	componentDidMount() {
 		//this.initRow(this.props.rowLength,this.props.pegs);
@@ -19,20 +26,22 @@ class Row extends React.Component {
 		//console.log(this.props.pegs);
 		return (
 			<div className="row-wrapper">
-				<ul>
+				<ul className="game-pegs">
 					{this.props.pegs.map(function(pegFill,index){
 						return (
 							<Peg key={index} pegType="user" fill={pegFill}/>
 						) 
 					},this)}
 				</ul>
-				<ul>
+				{this.props.isActive && this.props.isFull == true &&
+				<ConfirmationButton rowNum={this.props.rowNum} onClick={this.props.checkHandler} />
+				}
+				<ul className="result-pegs">
 					{this.props.resultPegs.map(function(pegFill, index){
 						return (
-							<Peg key={index} pegType="result" fill={pegFill}/>
+							<Peg key={this.props.index} pegType="result" fill={pegFill}/>
 						)
 					},this)}
-					<br/>
 				</ul>
 			</div>
 		)

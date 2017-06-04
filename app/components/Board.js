@@ -4,16 +4,15 @@ var Row = require('./Row');
 var PegSelector = require('./PegSelector');
 var Peg = require('./Peg');
 
-function ConfirmationButton(props) {
-	return (
-		<span className="confirm-btn" onClick={props.onClick}>OK!</span>
-	)
-}
+require('../styles/board.scss')
+
 
 function ProgressIndicator(props) {
 	var distFromBottom = (props.position) * 48;
 	return (
-		<span className="progress-indicator" style={{top:distFromBottom}}>Ahoy></span>
+		<span className="progress-indicator" style={{top:distFromBottom}}>
+			<img style={{height: '36px'}} src={require('../assets/arrow.svg')}/>
+		</span>
 	)
 }
 
@@ -48,15 +47,16 @@ class Board extends React.Component {
 	constructor(props) {
 		super();
 		this.state = { 
-			activeRow: 4,
+			activeRow: 11,
 			activeIndex: 0,
-			numRows: 5,
+			numRows: 12,
 			rowLength: 4,
 			code: [],
 			board: {rows: []}
 		};
 
 		this.fillNextSlot = this.fillNextSlot.bind(this);
+		this.undoSelection = this.undoSelection.bind(this);
 		this.checkRow = this.checkRow.bind(this);
 	}
 	componentDidMount() {
@@ -91,6 +91,20 @@ class Board extends React.Component {
 				}
 			}); 			
 		}
+	}
+	undoSelection(){
+		var board = this.state.board;
+		if (this.state.activeIndex >= 1) {
+			board.rows[this.state.activeRow].pegs[this.state.activeIndex-1] = 0;
+
+			this.setState(function(prevState,props) {
+				return {
+					board: board,
+					activeIndex: (prevState.activeIndex - 1)
+				}
+			})
+		}
+
 	}
 	setCode(codeLength) {
 		var code = []
@@ -166,10 +180,8 @@ class Board extends React.Component {
 						{this.state.board.rows.map(function(row,index){
 							return (
 								<li key={index}>
-									<Row pegs={row.pegs} resultPegs={row.resultPegs} rowNum={index} rowLength={this.state.rowLength}/>
-									{this.state.activeIndex >= this.state.rowLength && this.state.activeRow == index &&
-										<ConfirmationButton rowNum={index} onClick={this.checkRow} />
-									}
+									<Row pegs={row.pegs} checkHandler={this.checkRow} activeIndex={this.state.activeIndex} isActive={this.state.activeRow == index} isFull={this.state.activeIndex >= this.state.rowLength} resultPegs={row.resultPegs} rowNum={index} rowLength={this.state.rowLength}/>
+
 								</li>
 							)
 						},this)}
@@ -177,6 +189,7 @@ class Board extends React.Component {
 				</div>
 				<PegSelector
 					onSelect = {this.fillNextSlot}
+					removePeg = {this.undoSelection}
 				/>
 				<SecretCode code={this.state.code}/>
 			</div>

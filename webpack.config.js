@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
@@ -10,7 +11,14 @@ module.exports = {
 	module: {
 		rules: [
 			{ test: /\.(js)$/, use: 'babel-loader'},
-			{ test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']}
+			{ test: /\.scss$/, use: ['style-loader', 'css-loader', 'sass-loader']},
+			{
+		    	test: /\.(jpe?g|png|gif|svg)$/i,
+		        loaders: [
+		            'file-loader?hash=sha512&digest=hex&name=assets/[name].[ext]',
+		            'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
+		        ]
+		    }
 		]
 	},
 	plugins: [new HtmlWebpackPlugin({

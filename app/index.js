@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-require('./index.scss');
+require('./styles/index.scss');
 
 var App = require('./components/app');
 

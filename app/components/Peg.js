@@ -16,7 +16,7 @@ function Peg(props) {
 	};	 
 	return (
 		<li 
-			className={(props.pegType == 'user' ? "game-peg" : "result-peg") + " peg-"+colorMap[props.fill]}
+			className={(props.actionItem == true ? "action-element " : " ") + (props.pegType == 'user' ? "game-peg" : "result-peg") + " peg-"+colorMap[props.fill]}
 			onClick={props.clickHandler}
 		>{colorMap[props.fill]}</li>
 	)
