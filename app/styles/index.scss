@@ -11,6 +11,7 @@ $pink: rgb(204,98,171);
 $white: rgb(209,204,172);
 $gray: rgb(204,204,204);
 $dark-gray: rgb(39,39,39);
+$near-black: rgb(6,19,20);
 $black: rgb(0,0,0);
 
 * {
@@ -55,12 +56,27 @@ li {
 	cursor: pointer;
 	&.game-peg:hover {
 		opacity: 0.87;
-	}
+	} 
 }
 
 .container {
 	max-width: 1200px;
 	margin: 0 auto;
+}
+
+.button {
+	border: none;
+	outline: none;
+	background-color: $teal;
+	color: $white;
+	padding: 8px;
+	width: 100%;
+	font-size: 16px;
+	letter-spacing: 0.04em;
+	cursor: pointer;
+	&:hover {
+		opacity: 0.8;
+	}
 }
 
 h1 {
@@ -170,4 +186,31 @@ $peg-colors: ('empty': rgba($gray,0.07),
 
 .peg-selector {
 	margin: 40px 0;
+}
+
+.game-modal {
+	position:fixed;
+	padding: 20px 32px;
+	margin: auto;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	background-color: $near-black;
+	border: 5px solid $teal;
+	box-shadow: 0 0 6px 1px $teal;
+}
+
+.haze {
+	position: fixed;
+	width: 100%;
+	background-color: $near-black;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0.5;
+}
+
+.code-reveal {
+	margin: 12px 0 26px;
+	text-align: center;
 }

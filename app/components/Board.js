@@ -2,7 +2,9 @@ var React = require('react');
 var PropTypes = require('prop-types');
 var Row = require('./Row');
 var PegSelector = require('./PegSelector');
-var Peg = require('./Peg');
+var Peg = require('./Peg'),
+	Code = require('./Code'),
+	GameOverModal = require('./GameOverModal');
 
 require('../styles/board.scss')
 
@@ -15,27 +17,6 @@ function ProgressIndicator(props) {
 		</span>
 	)
 }
-
-
-function SecretCode(props) {
-	//hide this later - show for debugging
-	return (
-		<section className="code-reveal">
-			<h2>Code</h2>
-			<ul className="code-wrapper">
-				{props.code.map(function(peg,index){
-					return (
-						<Peg key={index}
-							fill={peg} 
-							pegType="user"
-						/>
-					)
-				})}
-			</ul>
-		</section>
-	)
-}
-
 
 /*SelectLanguage.propTypes = {
 	selectedLanguage: PropTypes.string.isRequired,
@@ -52,15 +33,23 @@ class Board extends React.Component {
 			numRows: 12,
 			rowLength: 4,
 			code: [],
-			board: {rows: []}
+			board: {rows: []},
+			gameOver: false,
+			winner: false,
 		};
 
 		this.fillNextSlot = this.fillNextSlot.bind(this);
 		this.undoSelection = this.undoSelection.bind(this);
 		this.checkRow = this.checkRow.bind(this);
+		this.resetGame = this.resetGame.bind(this);
 	}
 	componentDidMount() {
+		console.log(this);
 		//this.fillNextSlot(this.state.selectedLanguage);
+		this.createBoard();
+
+	}
+	createBoard() {
 		var board = {
 			rows: []
 		}
@@ -93,6 +82,7 @@ class Board extends React.Component {
 		}
 	}
 	undoSelection(){
+		console.log(this);
 		var board = this.state.board;
 		if (this.state.activeIndex >= 1) {
 			board.rows[this.state.activeRow].pegs[this.state.activeIndex-1] = 0;
@@ -105,6 +95,15 @@ class Board extends React.Component {
 			})
 		}
 
+	}
+	resetGame() {
+		this.createBoard();
+		this.setState({
+			winner: false,
+			gameOver: false,
+			activeRow: 11,
+			activeIndex: 0,
+		});
 	}
 	setCode(codeLength) {
 		var code = []
@@ -132,6 +131,7 @@ class Board extends React.Component {
 			blackPegCount = 0,
 			whitePegCount = 0;
 
+		//check for correct color and spot
 		for (var i = 0; i < code.length; i++) {
 			if (guess[i] === code[i]) {
 				blackPegCount += 1;
@@ -140,9 +140,9 @@ class Board extends React.Component {
 				code.splice(i,1);
 				i--;
 			}
-
 		}
 
+		//check for correct color only
 		for (var j = 0; j < guess.length; j++) {
 			var matchIndex = code.indexOf(guess[j]);
 			if (guess[j] != null && matchIndex !== -1) {
@@ -150,26 +150,34 @@ class Board extends React.Component {
 				whitePegCount += 1;
 				code.splice(matchIndex,1);
 				guess.splice(j,1);
-
 				j--;
 			}
-			else {
-				resultPegs.push(resultPegTypes.EMPTY);
-			}
+		}
+
+		//fill the rest of the results with empties
+		while (guess.length > 0) {
+			resultPegs.push(resultPegTypes.EMPTY);
+			guess.splice(0,1);
 		}
 
 		console.log(resultPegs);
 		currBoard.rows[this.state.activeRow].resultPegs = resultPegs;
 
-		console.log(blackPegCount);
-		console.log(whitePegCount);
-		this.setState(function(prevState,props) {
-			return {
-				activeRow: (prevState.activeRow - 1),
-				activeIndex: 0,
+		if (blackPegCount == this.state.rowLength) {
+			this.setState({
+				winner: true,
+				gameOver: true,
 				board: currBoard
-			}
-		});			
+			});
+		} else {	
+			this.setState(function(prevState,props) {
+				return {
+					activeRow: (prevState.activeRow - 1),
+					activeIndex: 0,
+					board: currBoard
+				}
+			});			
+		}
 	}
 	render() {
 		return (
@@ -191,7 +199,8 @@ class Board extends React.Component {
 					onSelect = {this.fillNextSlot}
 					removePeg = {this.undoSelection}
 				/>
-				<SecretCode code={this.state.code}/>
+				<Code code={this.state.code}/>
+				{this.state.gameOver && <GameOverModal isWinner={this.state.winner} code={this.state.code} resetFunction={this.resetGame}/>}
 			</div>
 		)
 	}
