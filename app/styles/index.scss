@@ -79,16 +79,15 @@ li {
 	}
 }
 
-h1 {
-	font-size: 3.5em;
-	text-transform: uppercase;
-	opacity: 0.8;
-	color: $teal;
-	text-shadow: 1px 1px 7px darken($teal, 5%);
-}
-
 .game-header {
 	margin-bottom: 25px;
+	&__text {
+		font-size: 3.5em;
+		text-transform: uppercase;
+		opacity: 0.8;
+		color: $teal;
+		text-shadow: 1px 1px 7px darken($teal, 5%);		
+	}
 }
 
 .board-wrapper {
@@ -97,33 +96,31 @@ h1 {
 
 .board {
 	position: relative;
-}
-
-.progress-indicator {
-	position: absolute;
-	line-height: 38px;
-	left: -27px;
-	transition: top ease-out 400ms;
-	transform: rotateY(180deg);
-}
-
-.rows {
-	width: 50%;
-}
-
-.row-wrapper {
-	padding-bottom: 10px;
-	display: flex;
-	align-items: center;
-	ul {
-		display: flex;
+	&__progress-indicator {
+		position: absolute;
+		line-height: 38px;
+		left: -27px;
+		transition: top ease-out 400ms;
+		transform: rotateY(180deg);		
+	}
+	&__rows {
+		width: 50%;
 	}
 }
 
 .row {
+	padding-bottom: 10px;
+	display: flex;
+	align-items: center;
+	&___section {
+		display: flex;
+	}
+}
+
+/*.row {
 	background-color: red;
 	border-top: 1px solid black; 
-}
+}*/
 
 $peg-colors: ('empty': rgba($gray,0.07),
 			'red': $red,
@@ -154,13 +151,19 @@ $peg-colors: ('empty': rgba($gray,0.07),
 	margin: 4px 6px;
 }
 
-.result-pegs {
+@each $color, $value in $peg-colors {
+	.game-peg--#{$color} {
+		background-color: $value;
+	}
+} 
+
+.result {
 	max-width: 36px;
 	flex-flow: wrap;
 	margin-left: auto;
 }
 
-.result-peg {
+.result__marker {
 	width: 10px;
 	height: 10px;
 	border-radius: 10px;
@@ -176,13 +179,16 @@ $peg-colors: ('empty': rgba($gray,0.07),
 	&:nth-of-type(n + 2) {
 		margin-bottom: 0;
 	}
-}
-
-@each $color, $value in $peg-colors {
-	.peg-#{$color} {
-		background-color: $value;
+	&--empty {
+		background-color: map-get($peg-colors,'empty');
 	}
-} 
+	&--white {
+		background-color: $white;
+	}
+	&--black {
+		background-color: $black;
+	}
+}
 
 .peg-selector {
 	margin: 40px 0;
@@ -198,6 +204,10 @@ $peg-colors: ('empty': rgba($gray,0.07),
 	background-color: $near-black;
 	border: 5px solid $teal;
 	box-shadow: 0 0 6px 1px $teal;
+	&__code-reveal {
+		margin: 12px 0 26px;
+		text-align: center;		
+	}
 }
 
 .haze {
@@ -211,6 +221,4 @@ $peg-colors: ('empty': rgba($gray,0.07),
 }
 
 .code-reveal {
-	margin: 12px 0 26px;
-	text-align: center;
 }

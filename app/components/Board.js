@@ -1,28 +1,20 @@
-var React = require('react');
-var PropTypes = require('prop-types');
-var Row = require('./Row');
-var PegSelector = require('./PegSelector');
-var Peg = require('./Peg'),
-	Code = require('./Code'),
-	GameOverModal = require('./GameOverModal');
+import React from 'react';
+import PropTypes from 'prop-types';
+import Row from './Row';
+import PegSelector from './PegSelector';
+import GameOverModal from './GameOverModal';
+import Code from './Code';
+import Peg from './Peg';
+import '../styles/board.scss';
 
-require('../styles/board.scss')
-
-
-function ProgressIndicator(props) {
+const ProgressIndicator = (props) => {
 	var distFromBottom = (props.position) * 48;
 	return (
-		<span className="progress-indicator" style={{top:distFromBottom}}>
+		<span className="board__progress-indicator" style={{top:distFromBottom}}>
 			<img style={{height: '36px'}} src={require('../assets/arrow.svg')}/>
 		</span>
 	)
 }
-
-/*SelectLanguage.propTypes = {
-	selectedLanguage: PropTypes.string.isRequired,
-	onSelect: PropTypes.func.isRequired
-};*/
-
 
 class Board extends React.Component {
 	constructor(props) {
@@ -44,7 +36,6 @@ class Board extends React.Component {
 		this.resetGame = this.resetGame.bind(this);
 	}
 	componentDidMount() {
-		console.log(this);
 		//this.fillNextSlot(this.state.selectedLanguage);
 		this.createBoard();
 
@@ -56,10 +47,10 @@ class Board extends React.Component {
 		for (var i = 0; i < this.state.numRows; i++) {
 			board.rows.push({
 				pegs: [0,0,0,0],
-				resultPegs: [0,0,0,0]
+				resultMarkers: [0,0,0,0]
 			}); 
 		}
-		this.setState(function() {
+		this.setState(() => {
 			return {
 				board: board
 			}
@@ -73,7 +64,7 @@ class Board extends React.Component {
 			console.log('you can\'t do that');
 		} else {
 			board.rows[this.state.activeRow].pegs[this.state.activeIndex] = chosenPeg;
-			this.setState(function(prevState,props) {
+			this.setState((prevState,props) => {
 				return {
 					board: board,
 					activeIndex: (prevState.activeIndex + 1)
@@ -87,7 +78,7 @@ class Board extends React.Component {
 		if (this.state.activeIndex >= 1) {
 			board.rows[this.state.activeRow].pegs[this.state.activeIndex-1] = 0;
 
-			this.setState(function(prevState,props) {
+			this.setState((prevState,props) => {
 				return {
 					board: board,
 					activeIndex: (prevState.activeIndex - 1)
@@ -117,7 +108,7 @@ class Board extends React.Component {
 		console.log(code);
 	}
 	checkRow() {
-		var resultPegTypes = {
+		var resultMarkerTypes = {
 			EMPTY : 0,
 			BLACK : 9,
 			WHITE: 8
@@ -127,7 +118,7 @@ class Board extends React.Component {
 		var code = this.state.code.slice(),
 			guess = this.state.board.rows[this.state.activeRow].pegs.slice(),
 			currBoard = Object.assign({},this.state.board),
-			resultPegs = [],
+			resultMarkers = [],
 			blackPegCount = 0,
 			whitePegCount = 0;
 
@@ -135,7 +126,7 @@ class Board extends React.Component {
 		for (var i = 0; i < code.length; i++) {
 			if (guess[i] === code[i]) {
 				blackPegCount += 1;
-				resultPegs.push(resultPegTypes.BLACK);
+				resultMarkers.push(resultMarkerTypes.BLACK);
 				guess.splice(i,1);
 				code.splice(i,1);
 				i--;
@@ -146,7 +137,7 @@ class Board extends React.Component {
 		for (var j = 0; j < guess.length; j++) {
 			var matchIndex = code.indexOf(guess[j]);
 			if (guess[j] != null && matchIndex !== -1) {
-				resultPegs.push(resultPegTypes.WHITE);
+				resultMarkers.push(resultMarkerTypes.WHITE);
 				whitePegCount += 1;
 				code.splice(matchIndex,1);
 				guess.splice(j,1);
@@ -156,12 +147,11 @@ class Board extends React.Component {
 
 		//fill the rest of the results with empties
 		while (guess.length > 0) {
-			resultPegs.push(resultPegTypes.EMPTY);
+			resultMarkers.push(resultMarkerTypes.EMPTY);
 			guess.splice(0,1);
 		}
 
-		console.log(resultPegs);
-		currBoard.rows[this.state.activeRow].resultPegs = resultPegs;
+		currBoard.rows[this.state.activeRow].resultMarkers = resultMarkers;
 
 		if (blackPegCount == this.state.rowLength) {
 			this.setState({
@@ -170,7 +160,7 @@ class Board extends React.Component {
 				board: currBoard
 			});
 		} else {	
-			this.setState(function(prevState,props) {
+			this.setState((prevState,props) => {
 				return {
 					activeRow: (prevState.activeRow - 1),
 					activeIndex: 0,
@@ -184,13 +174,10 @@ class Board extends React.Component {
 			<div className="board-wrapper">
 				<div className="board">
 					<ProgressIndicator position={this.state.activeRow} />
-					<ul className="rows">
-						{this.state.board.rows.map(function(row,index){
+					<ul className="board__rows">
+						{this.state.board.rows.map((row,index) => {
 							return (
-								<li key={index}>
-									<Row pegs={row.pegs} checkHandler={this.checkRow} activeIndex={this.state.activeIndex} isActive={this.state.activeRow == index} isFull={this.state.activeIndex >= this.state.rowLength} resultPegs={row.resultPegs} rowNum={index} rowLength={this.state.rowLength}/>
-
-								</li>
+								<Row key={index} pegs={row.pegs} checkHandler={this.checkRow} activeIndex={this.state.activeIndex} isActive={this.state.activeRow == index} isFull={this.state.activeIndex >= this.state.rowLength} resultMarkers={row.resultMarkers} rowNum={index} rowLength={this.state.rowLength}/>
 							)
 						},this)}
 					</ul>
@@ -199,11 +186,10 @@ class Board extends React.Component {
 					onSelect = {this.fillNextSlot}
 					removePeg = {this.undoSelection}
 				/>
-				<Code code={this.state.code}/>
 				{this.state.gameOver && <GameOverModal isWinner={this.state.winner} code={this.state.code} resetFunction={this.resetGame}/>}
 			</div>
 		)
 	}
 }
 
-module.exports = Board;
+export { Board };

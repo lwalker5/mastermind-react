@@ -1,6 +1,6 @@
-var React = require('react'),
-	Code = require('./Code'),
-	Button = require('./Button');
+import React from 'react';
+import Code from './Code';
+import Button from './Button';
 
 const GameOverModal = (props) => {
 	return (
@@ -18,4 +18,4 @@ const GameOverModal = (props) => {
 	)
 }
 
-module.exports = GameOverModal;
+export default GameOverModal;

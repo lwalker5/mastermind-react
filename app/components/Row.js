@@ -1,5 +1,6 @@
-var React = require('react');
-var Peg = require('./Peg');
+import React from 'react';
+import GamePeg from './GamePeg';
+import ResultMarker from './ResultMarker';
 
 function ConfirmationButton(props) {
 	return (
@@ -14,7 +15,6 @@ class Row extends React.Component {
 			isActive: false,
 			activeIndex: 0,
 		}
-		console.log(props);
 	}
 	componentDidMount() {
 		//this.initRow(this.props.rowLength,this.props.pegs);
@@ -23,29 +23,28 @@ class Row extends React.Component {
 		//this.initRow(this.props.rowLength,this.props.pegs);		
 	}
 	render() {
-		//console.log(this.props.pegs);
 		return (
-			<div className="row-wrapper">
-				<ul className="game-pegs">
-					{this.props.pegs.map(function(pegFill,index){
+			<li className="row">
+				<ul className="row__section game-pegs">
+					{this.props.pegs.map((pegFill,index) => {
 						return (
-							<Peg key={index} pegType="user" fill={pegFill}/>
+							<GamePeg key={index} fill={pegFill}/>
 						) 
 					},this)}
 				</ul>
 				{this.props.isActive && this.props.isFull == true &&
 				<ConfirmationButton rowNum={this.props.rowNum} onClick={this.props.checkHandler} />
 				}
-				<ul className="result-pegs">
-					{this.props.resultPegs.map(function(pegFill, index){
+				<ul className="row__section result">
+					{this.props.resultMarkers.map((pegFill, index) => {
 						return (
-							<Peg key={this.props.index} pegType="result" fill={pegFill}/>
+							<ResultMarker key={index} fill={pegFill}/>
 						)
 					},this)}
 				</ul>
-			</div>
+			</li>
 		)
 	}
 }
 
-module.exports = Row;
+export default Row;

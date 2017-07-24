@@ -1,13 +1,11 @@
-var React = require('react');
+import React from 'react';
 
-class Header extends React.Component {
-	render() {
-		return (
-			<div className="game-header">
-				<h1>Mastermind</h1>
-			</div>
-		)
-	}
+const Header = () => {
+	return (
+		<div className="game-header">
+			<h1 className="game-header__text">Mastermind</h1>
+		</div>
+	)	
 }
 
-module.exports = Header;
+export default Header;

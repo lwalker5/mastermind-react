@@ -1,8 +1,8 @@
-var React = require('react');
-var Board = require('./Board');
-var Header = require('./Header');
+import React from 'react';
+import { Board } from './Board';
+import Header from './Header';
 
-class App extends React.Component {
+export default class App extends React.Component {
 	render() {
 		return (
 			<div className="container">
@@ -12,5 +12,3 @@ class App extends React.Component {
 		)
 	}
 }
-
-module.exports = App;

@@ -1,6 +1,6 @@
-var React = require('react');
+import React from 'react';
 
-function Peg(props) {
+const Peg = (props) => {
 	//peg type is 'user' for larger playable pegs and 'result' for small result markers 
 	var colorMap = {
 		0: 'empty',
@@ -10,16 +10,16 @@ function Peg(props) {
 		4: 'green',
 		5: 'teal', 
 		6: 'purple',
-		7: 'pink',
+		7: 'pink', 
 		8: 'white',
 		9: 'black'
 	};	 
 	return (
 		<li 
-			className={(props.actionItem == true ? "action-element " : " ") + (props.pegType == 'user' ? "game-peg" : "result-peg") + " peg-"+colorMap[props.fill]}
+			className={(props.actionItem == true ? "action-element " : " ") + (props.pegType == 'user' ? "game-peg" : "result-peg") + " game-peg--"+colorMap[props.fill]}
 			onClick={props.clickHandler}
 		>{colorMap[props.fill]}</li>
 	)
 }
 
-module.exports = Peg;
+export default Peg;

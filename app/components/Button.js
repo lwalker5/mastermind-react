@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 
 const Button = (props) => {
 	return (
@@ -6,4 +6,4 @@ const Button = (props) => {
 	)
 }
 
-module.exports = Button;
+export default Button;

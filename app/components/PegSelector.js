@@ -1,17 +1,16 @@
-var React = require('react');
-var Peg = require('./Peg');
+import React from 'react';
+import GamePeg from './GamePeg';
 
-function PegSelector(props) {
+const PegSelector = (props) => {
 	var pegOptions = [1,2,3,4,5,6,7,8]; 
 
 	return (
 		<ul className="peg-selector">
-			{pegOptions.map(function(peg){
+			{pegOptions.map((peg) => {
 				return (
-					<Peg 
+					<GamePeg 
 						key={peg}
 						fill={peg}
-						pegType="user"
 						actionItem={true}
 						clickHandler={props.onSelect.bind(null,peg)}
 					/>
@@ -23,4 +22,4 @@ function PegSelector(props) {
 	)	
 }
 
-module.exports = PegSelector;
+export default PegSelector;

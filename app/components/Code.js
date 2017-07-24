@@ -1,16 +1,14 @@
-var React = require('react'),
-	Peg = require('./Peg');
+import React from 'react';
+import GamePeg from './GamePeg';
 
 const Code = (props) => {
-	//hide this later - show for debugging
 	return (
-		<section className="code-reveal">
-			<ul className="code-wrapper">
+		<section className="game-modal__code-reveal">
+			<ul>
 				{props.code.map(function(peg,index){
 					return (
-						<Peg key={index}
+						<GamePeg key={index}
 							fill={peg} 
-							pegType="user"
 						/>
 					)
 				})}
@@ -18,5 +16,4 @@ const Code = (props) => {
 		</section>
 	)
 }
-
-module.exports = Code;
+export default Code;
