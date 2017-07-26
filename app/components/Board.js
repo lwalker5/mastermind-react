@@ -20,9 +20,9 @@ class Board extends React.Component {
 	constructor(props) {
 		super();
 		this.state = { 
-			activeRow: 11,
+			activeRow: props.rowCount - 1,
 			activeIndex: 0,
-			numRows: 12,
+			numRows: props.rowCount,
 			rowLength: 4,
 			code: [],
 			board: {rows: []},
@@ -73,7 +73,6 @@ class Board extends React.Component {
 		}
 	}
 	undoSelection(){
-		console.log(this);
 		var board = this.state.board;
 		if (this.state.activeIndex >= 1) {
 			board.rows[this.state.activeRow].pegs[this.state.activeIndex-1] = 0;
@@ -92,7 +91,7 @@ class Board extends React.Component {
 		this.setState({
 			winner: false,
 			gameOver: false,
-			activeRow: 11,
+			activeRow: this.props.rowCount - 1,
 			activeIndex: 0,
 		});
 	}
@@ -159,6 +158,13 @@ class Board extends React.Component {
 				gameOver: true,
 				board: currBoard
 			});
+		} else if (this.state.activeRow === 0) {
+			this.setState({
+				winner: false,
+				gameOver: true,
+				board: currBoard,
+				activeIndex: 0
+			})
 		} else {	
 			this.setState((prevState,props) => {
 				return {

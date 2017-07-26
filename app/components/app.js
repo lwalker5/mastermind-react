@@ -7,7 +7,7 @@ export default class App extends React.Component {
 		return (
 			<div className="container">
 				<Header />
-				<Board />
+				<Board rowCount="7" />
 			</div>
 		)
 	}
